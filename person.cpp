@@ -10,14 +10,15 @@
  **/
 
 #include "person.h"
-#include "world.h"
-#include "simulation.h"
 
 using namespace std;
 
 /**
  * Setting up global variables.
  */
+
+int radius = 0;
+static int freeID = 0;
 
 /**
  * Construction a random generator engine from a time-based seed.
@@ -36,7 +37,9 @@ uniform_real_distribution<> zeroToOne(0.0, 1.0);
  * Defining functions.
  */
 
-bool randomProbability(float probability);
+bool runProbability(float probability);
+bool relationProbability(int x1, int y1, int x2, int y2);
+void getRadius(int numPeople, double populationDensity);
 int* randomPosition();
 double randomAge();
 int randomRecovery(double age);
@@ -143,9 +146,39 @@ void person::initPerson(double newID, double newAge, int newInitPos[2],
  * This function return a bool with a given probability.
  */
 
-bool randomProbability(float probability) {
+bool runProbability(float probability) {
 	//Return a bool value depending on the probability.
 	return zeroToOne(generator) <= probability;
+}
+
+/**
+ * This function is used to find out if someone is a relation or not.
+ */
+
+bool relationProbability(int x1, int y1, int x2, int y2) {
+
+	//Using the cumulative function to get a probability of relation.
+	float probability = exp(
+			-((pow(abs(x1 - x2), 2)) + (pow(abs(y1 - y2), 2)))
+					/ (2 * pow(radius, 2)));
+
+	//Use the runProbability function to return a bool value.
+	return runProbability(probability);
+}
+
+/**
+ * This function i used to store the radius of the world in the global variable radius.
+ */
+
+void getRadius(int numPeople, double populationDensity) {
+	//Getting the are of the world.
+	double area = numPeople / populationDensity;
+
+	//Get the radius of the area.
+	int stackRadius = sqrt(area / M_PI);
+
+	//Store the radius into the global radius.
+	radius = stackRadius;
 }
 
 /**
@@ -170,31 +203,6 @@ int* randomPosition() {
 
 	//Get an array of size two int.
 	int *pos = (int*) malloc(sizeof(int) * 2);
-
-	//Creating a string from x and y.
-	string strPos = to_string(x) + " " + to_string(y);
-
-	//Changing pos until pos in unique in the world.
-	while (world.find(strPos) != world.end()) {
-
-		//Movement in a random direction.
-		if (randomProbability(0.25)) {
-			x++;
-			y++;
-		} else if (randomProbability(0.25)) {
-			x++;
-			y--;
-		} else if (randomProbability(0.25)) {
-			x--;
-			y++;
-		} else if (randomProbability(0.25)) {
-			x--;
-			y--;
-		}
-
-		//Update strPos.
-		strPos = to_string(x) + " " + to_string(y);
-	}
 
 	//Storing the x and y value into pos.
 	pos[0] = x;
@@ -456,8 +464,8 @@ family* person::getRelations(double relationID) {
 /**
  * Returns a pointer to the relations list.
  */
-list<family*>* person::getRelations() {
-	return &relations;
+list<family*>::iterator person::getRelations() {
+	return relations.begin();
 }
 
 /**
@@ -518,7 +526,7 @@ void person::printPerson() {
  * This function is used to call the personRelations function for each person in the world.
  */
 
-void initRelations(int min, int max) {
+void initRelations(map<string, person*>::iterator it) {
 
 	//Iteration through world and call personRelations function.
 	for (it = world.begin(); it != world.end(); it++) {

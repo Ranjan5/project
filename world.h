@@ -19,8 +19,8 @@
  * Setting up global variables to be shared.
  **/
 
-extern map<string, person*> world;
-extern map<string, person*>::iterator it;
+extern map<int, person*> world;
+extern map<int, person*>::iterator it;
 
 using namespace std;
 

@@ -19,7 +19,6 @@ using namespace std;
 
 int numPeople = 0;
 double populationDensity = 0;
-int radius = 0;
 int runPeriod = 0;
 int daysInSimulation = 0;
 

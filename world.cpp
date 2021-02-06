@@ -10,7 +10,6 @@
  **/
 
 #include "world.h"
-#include "simulation.h"
 
 /**
  * Setting up global variables.
@@ -72,19 +71,4 @@ void printWorld() {
 	for (it = world.begin(); it != world.end(); it++) {
 		it->second->printPerson();
 	}
-}
-
-/**
- * This function is used to initialize the radius of the world.
- */
-
-void initRadius() {
-	//Getting the are of the world.
-	double area = numPeople / populationDensity;
-
-	//Get the radius of the area.
-	int stackRadius = sqrt(area / M_PI);
-
-	//Store the radius into the global radius.
-	radius = stackRadius;
 }

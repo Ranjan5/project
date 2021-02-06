@@ -28,7 +28,7 @@ class family;
  * Setting up global variables.
  **/
 
-static int freeID = 0;
+extern int radius;
 
 /**
  * This is the person class.
@@ -95,7 +95,7 @@ public:
 
 	void addRelations(family *newRelations);
 	family* getRelations(double relationID);
-	list<family*>* getRelations();
+	list<family*>::iterator getRelations();
 };
 
 /**
@@ -118,15 +118,15 @@ public:
 };
 
 /**
+ * This function i used to store the radius of the world in the global variable radius.
+ */
+
+void getRadius(int numPeople, double populationDensity);
+
+/**
  * This function is used to call the personRelations function, using recursion.
  */
 
-void initRelations(int min, int max);
-
-/**
- * This function is used to initialize relations list for a newPerson, using recursion.
- */
-
-void personRelations(person *newPerson, int min, int max);
+void initRelations(map<string, person*>::iterator it);
 
 #endif /* PERSON_H_ */

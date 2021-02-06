@@ -17,11 +17,6 @@
 /**
  * Setting up global variables to be shared.
  **/
-extern int numPeople;
-extern double populationDensity;
-extern int radius;
-extern int runPeriod;
-extern int daysInSimulation;
 
 using namespace std;
 
